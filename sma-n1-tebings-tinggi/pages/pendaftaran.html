@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pendaftaran Siswa Baru - SMA Negeri 1 Tebing Tinggi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#0d5c2e', secondary: '#1a7a3e', accent: '#f59e0b' },
+          fontFamily: { sans: ['Poppins', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/data-service.js"></script>
+</head>
+<body class="font-sans bg-gray-50">
+  <!-- Simple Header -->
+  <header class="bg-primary text-white py-4">
+    <div class="container mx-auto px-4 flex items-center justify-between">
+      <a href="../index.html" class="flex items-center gap-3">
+        <img src="../assets/logo.png" class="h-12" alt="Logo">
+        <div>
+          <p class="font-bold">SMA Negeri 1 Tebing Tinggi</p>
+          <p class="text-xs text-green-200">Pendaftaran Peserta Didik Baru</p>
+        </div>
+      </a>
+      <a href="../index.html" class="text-sm hover:underline"><i class="fas fa-home mr-1"></i> Beranda</a>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-10 max-w-3xl">
+    <h1 class="text-3xl font-bold text-primary mb-2">Formulir Pendaftaran Siswa Baru</h1>
+    <p class="text-gray-600 mb-8">Silakan isi formulir di bawah ini dengan data yang benar dan lengkap. Data akan masuk ke database admin sekolah.</p>
+
+    <form id="regForm" class="bg-white rounded-xl shadow-md p-6 space-y-5">
+      <div class="grid md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium mb-1">Nama Lengkap *</label>
+          <input type="text" name="nama" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">NISN</label>
+          <input type="text" name="nisn" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Jenis Kelamin *</label>
+          <select name="jk" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+            <option value="">Pilih</option>
+            <option value="L">Laki-laki</option>
+            <option value="P">Perempuan</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Tanggal Lahir *</label>
+          <input type="date" name="tgl_lahir" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Tempat Lahir *</label>
+          <input type="text" name="tempat_lahir" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">No. HP / WhatsApp *</label>
+          <input type="tel" name="hp" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Alamat Lengkap *</label>
+        <textarea name="alamat" rows="3" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"></textarea>
+      </div>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium mb-1">Asal Sekolah *</label>
+          <input type="text" name="asal_sekolah" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Pilihan Jurusan (jika ada)</label>
+          <select name="jurusan" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+            <option value="">Belum memilih</option>
+            <option>IPA / MIPA</option>
+            <option>IPS</option>
+            <option>Bahasa</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Nama Orang Tua / Wali *</label>
+        <input type="text" name="nama_ortu" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">No. HP Orang Tua / Wali *</label>
+        <input type="tel" name="hp_ortu" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+      </div>
+
+      <div class="pt-4">
+        <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-semibold py-3 rounded-lg transition">
+          <i class="fas fa-paper-plane mr-2"></i> Kirim Pendaftaran
+        </button>
+      </div>
+      <p id="formStatus" class="text-center text-sm hidden"></p>
+    </form>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await DataService.init();
+    });
+    document.getElementById('regForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form));
+      const status = document.getElementById('formStatus');
+      const btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengirim...';
+      try {
+        await DataService.submitPendaftaran(data);
+        status.textContent = 'Pendaftaran berhasil dikirim! Data telah masuk ke sistem. Kami akan menghubungi Anda segera.';
+        status.className = 'text-center text-sm text-green-600 mt-3';
+        status.classList.remove('hidden');
+        form.reset();
+      } catch (err) {
+        status.textContent = 'Gagal mengirim: ' + (err.message || 'Coba lagi nanti');
+        status.className = 'text-center text-sm text-red-600 mt-3';
+        status.classList.remove('hidden');
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Kirim Pendaftaran';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "nama": "SMA NEGERI 1 TEBING TINGGI",
+  "npsn": "10400816",
+  "bentuk": "SMA",
+  "status": "Negeri",
+  "alamat": "Jl. Pembangunan II",
+  "desa": "Selatpanjang Kota",
+  "kecamatan": "Kec. Tebing Tinggi",
+  "kabupaten": "Kab. Kepulauan Meranti",
+  "provinsi": "Prov. Riau",
+  "rt": "1",
+  "rw": "7",
+  "kode_pos": "28753",
+  "lintang": 1.0075,
+  "bujur": 102.7127,
+  "telepon": "076332418",
+  "email": "sman1tt_selpa@yahoo.co.id",
+  "website": "http://www.sman1ttselpa.sch.id",
+  "sk_izin": "082/UUK/1969",
+  "tanggal_sk": "1969-05-28",
+  "kepala_sekolah": {
+    "nama": "Poyadi",
+    "nip": "196802111992031006",
+    "jabatan": "Kepala Sekolah"
+  },
+  "visi": "Terwujudnya peserta didik yang beriman, bertakwa, berakhlak mulia, berilmu, berprestasi, dan berwawasan global berdasarkan profil pelajar Pancasila.",
+  "misi": [
+    "Menanamkan keimanan dan ketakwaan melalui kegiatan keagamaan dan pembiasaan akhlak mulia.",
+    "Meningkatkan kualitas pembelajaran yang aktif, kreatif, inovatif, dan menyenangkan berbasis Kurikulum Merdeka.",
+    "Mengembangkan potensi peserta didik di bidang akademik dan non-akademik secara optimal.",
+    "Membangun budaya literasi, numerasi, dan digital di lingkungan sekolah.",
+    "Menjalin kerjasama dengan orang tua, masyarakat, dan dunia usaha/industri.",
+    "Mewujudkan tata kelola sekolah yang transparan, akuntabel, dan partisipatif."
+  ],
+  "sejarah_singkat": "SMA Negeri 1 Tebing Tinggi didirikan berdasarkan SK Izin Operasional 082/UUK/1969 tanggal 28 Mei 1969. Sekolah ini terletak di jantung Kota Selatpanjang, Kabupaten Kepulauan Meranti, Provinsi Riau. Sejak berdiri, sekolah terus berkembang menjadi salah satu SMA unggulan di wilayah Kepulauan Meranti dengan berbagai prestasi akademik dan non-akademik."
+}

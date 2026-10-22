@@ -1,0 +1,55 @@
+/* Custom styles beyond Tailwind */
+.quick-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #374151;
+}
+.quick-menu-item:hover {
+  background-color: #f0fdf4;
+  transform: translateY(-2px);
+}
+.icon-box {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.nav-link.active {
+  background-color: #f0fdf4;
+}
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+/* Admin notification badge */
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.65rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

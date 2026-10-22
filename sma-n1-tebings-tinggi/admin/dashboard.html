@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin - SMA N1 Tebing Tinggi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#0d5c2e', secondary: '#1a7a3e', accent: '#f59e0b' },
+          fontFamily: { sans: ['Poppins', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <!-- Supabase SDK + Config + Data Service -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/data-service.js"></script>
+</head>
+<body class="font-sans bg-gray-100 min-h-screen">
+  <script>
+    if (!sessionStorage.getItem('adminSession')) window.location.href = 'login.html';
+  </script>
+
+  <div class="flex">
+    <aside class="w-64 bg-primary text-white min-h-screen fixed hidden md:block">
+      <div class="p-5 border-b border-green-700">
+        <div class="flex items-center gap-3">
+          <img src="../assets/logo.png" class="h-10" alt="Logo">
+          <div>
+            <p class="font-bold text-sm">Admin Portal</p>
+            <p class="text-xs text-green-200">SMA N1 Tebing Tinggi</p>
+          </div>
+        </div>
+      </div>
+      <nav class="p-4 space-y-1 text-sm">
+        <a href="#" onclick="showSection('dashboard');return false;" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg bg-green-700"><i class="fas fa-tachometer-alt w-5"></i> Dashboard</a>
+        <a href="#" onclick="showSection('konten');return false;" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-green-700"><i class="fas fa-newspaper w-5"></i> Kelola Konten</a>
+        <a href="#" onclick="showSection('pendaftaran');return false;" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-green-700"><i class="fas fa-user-graduate w-5"></i> Data Pendaftaran</a>
+        <a href="#" onclick="showSection('pengumuman');return false;" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-green-700"><i class="fas fa-bullhorn w-5"></i> Pengumuman</a>
+        <a href="#" onclick="showSection('log');return false;" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-green-700"><i class="fas fa-history w-5"></i> Log Aktivitas</a>
+        <a href="../index.html" target="_blank" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-green-700 mt-4"><i class="fas fa-external-link-alt w-5"></i> Lihat Website</a>
+        <a href="#" onclick="logout();return false;" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-600 mt-2"><i class="fas fa-sign-out-alt w-5"></i> Logout</a>
+      </nav>
+    </aside>
+
+    <main class="flex-1 md:ml-64">
+      <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+        <div>
+          <h1 class="text-xl font-bold text-gray-800" id="pageTitle">Dashboard</h1>
+          <p class="text-sm text-gray-500">Portal Admin SMA Negeri 1 Tebing Tinggi</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded" id="dbMode">Loading...</span>
+          <span class="text-sm text-gray-500 hidden sm:inline" id="loginInfo"></span>
+          <button onclick="logout()" class="text-sm text-red-600 hover:underline">Logout</button>
+        </div>
+      </header>
+
+      <div class="p-6">
+        <section id="section-dashboard">
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <div class="bg-white rounded-xl shadow p-5">
+              <p class="text-sm text-gray-500">Total Konten</p>
+              <p class="text-2xl font-bold text-primary" id="statKonten">0</p>
+            </div>
+            <div class="bg-white rounded-xl shadow p-5">
+              <p class="text-sm text-gray-500">Pendaftar Baru</p>
+              <p class="text-2xl font-bold text-amber-600" id="statDaftar">0</p>
+            </div>
+            <div class="bg-white rounded-xl shadow p-5">
+              <p class="text-sm text-gray-500">Pengumuman</p>
+              <p class="text-2xl font-bold text-blue-600" id="statPengumuman">0</p>
+            </div>
+            <div class="bg-white rounded-xl shadow p-5">
+              <p class="text-sm text-gray-500">Log Aktivitas</p>
+              <p class="text-2xl font-bold text-purple-600" id="statLog">0</p>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl shadow p-6">
+            <h2 class="font-bold mb-4">Ringkasan Cepat</h2>
+            <p class="text-gray-600 text-sm mb-4">Gunakan menu di samping untuk mengelola konten website, melihat data pendaftaran siswa baru, dan memantau log aktivitas.</p>
+            <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+              <strong>Catatan Keamanan:</strong> Data saat ini disimpan di browser (localStorage). Untuk produksi segera integrasikan database cloud (Supabase/Firebase) agar data aman dan bisa diakses dari mana saja.
+            </div>
+          </div>
+        </section>
+
+        <section id="section-konten" class="hidden">
+          <div class="bg-white rounded-xl shadow p-6 mb-6">
+            <h2 class="text-lg font-bold mb-4">Tambah Konten Baru</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">Judul</label>
+                <input type="text" id="contentTitle" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Kategori</label>
+                <select id="contentCategory" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+                  <option>Berita Kegiatan</option>
+                  <option>Berita Pendidikan</option>
+                  <option>Artikel Sekolah</option>
+                  <option>Pengumuman</option>
+                  <option>Agenda</option>
+                </select>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium mb-1">Isi Konten</label>
+                <textarea id="contentBody" rows="5" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none"></textarea>
+              </div>
+            </div>
+            <button onclick="saveContent()" class="mt-4 bg-primary text-white px-5 py-2 rounded-lg hover:bg-secondary transition">
+              <i class="fas fa-save mr-1"></i> Simpan & Publikasikan
+            </button>
+            <p id="saveStatus" class="text-sm mt-2 hidden"></p>
+          </div>
+          <div class="bg-white rounded-xl shadow p-6">
+            <h2 class="text-lg font-bold mb-4">Daftar Konten Tersimpan</h2>
+            <div id="contentList" class="space-y-3 max-h-96 overflow-y-auto"></div>
+          </div>
+        </section>
+
+        <section id="section-pendaftaran" class="hidden">
+          <div class="bg-white rounded-xl shadow p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-lg font-bold">Data Pendaftaran Siswa Baru</h2>
+              <button onclick="exportPendaftaran()" class="text-sm bg-green-100 text-green-800 px-3 py-1 rounded hover:bg-green-200">
+                <i class="fas fa-download mr-1"></i> Export JSON
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead class="bg-gray-100">
+                  <tr>
+                    <th class="px-3 py-2 text-left">Nama</th>
+                    <th class="px-3 py-2 text-left">JK</th>
+                    <th class="px-3 py-2 text-left">Asal Sekolah</th>
+                    <th class="px-3 py-2 text-left">HP</th>
+                    <th class="px-3 py-2 text-left">Tanggal Daftar</th>
+                    <th class="px-3 py-2 text-left">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="daftarTable"></tbody>
+              </table>
+            </div>
+            <p id="daftarEmpty" class="text-gray-400 text-center py-8 hidden">Belum ada data pendaftaran.</p>
+          </div>
+        </section>
+
+        <section id="section-pengumuman" class="hidden">
+          <div class="bg-white rounded-xl shadow p-6">
+            <h2 class="text-lg font-bold mb-4">Buat Pengumuman Cepat</h2>
+            <input type="text" id="pengTitle" placeholder="Judul pengumuman" class="w-full border rounded-lg px-3 py-2 mb-3 focus:ring-2 focus:ring-primary outline-none">
+            <textarea id="pengBody" rows="3" placeholder="Isi pengumuman..." class="w-full border rounded-lg px-3 py-2 mb-3 focus:ring-2 focus:ring-primary outline-none"></textarea>
+            <button onclick="savePengumuman()" class="bg-primary text-white px-5 py-2 rounded-lg hover:bg-secondary">Publikasikan</button>
+            <div id="pengList" class="mt-6 space-y-2"></div>
+          </div>
+        </section>
+
+        <section id="section-log" class="hidden">
+          <div class="bg-white rounded-xl shadow p-6">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2"><i class="fas fa-history"></i> Log Aktivitas</h2>
+            <div id="activityLog" class="space-y-2 text-sm max-h-96 overflow-y-auto"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // ========== DataService powered Admin ==========
+    async function init() {
+      await DataService.init();
+      const mode = DataService.isCloud() ? '☁️ Supabase Cloud' : '💾 localStorage (Demo)';
+      document.getElementById('dbMode').textContent = mode;
+      updateStats();
+      // Realtime notification untuk pendaftaran baru (hanya jika Supabase aktif)
+      if (DataService.isCloud()) {
+        DataService.subscribeRealtime('pendaftaran', (payload) => {
+          if (payload.eventType === 'INSERT') {
+            showToast('Pendaftaran baru: ' + (payload.new?.nama || ''));
+            updateStats();
+          }
+        });
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.className = 'fixed bottom-4 right-4 bg-primary text-white px-5 py-3 rounded-lg shadow-lg z-50';
+      t.innerHTML = '<i class="fas fa-bell mr-2"></i>' + msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 5000);
+    }
+
+    async function logout() {
+      await DataService.addLog('Logout');
+      sessionStorage.removeItem('adminSession');
+      window.location.href = 'login.html';
+    }
+
+    function showSection(name) {
+      ['dashboard','konten','pendaftaran','pengumuman','log'].forEach(s => {
+        document.getElementById('section-' + s).classList.add('hidden');
+      });
+      document.getElementById('section-' + name).classList.remove('hidden');
+      document.getElementById('pageTitle').textContent = {
+        dashboard: 'Dashboard', konten: 'Kelola Konten', pendaftaran: 'Data Pendaftaran',
+        pengumuman: 'Pengumuman', log: 'Log Aktivitas'
+      }[name];
+      if (name === 'pendaftaran') loadPendaftaran();
+      if (name === 'konten') loadContents();
+      if (name === 'log') loadLogs();
+      if (name === 'pengumuman') loadPengumuman();
+    }
+
+    async function saveContent() {
+      const title = document.getElementById('contentTitle').value.trim();
+      const category = document.getElementById('contentCategory').value;
+      const body = document.getElementById('contentBody').value.trim();
+      const status = document.getElementById('saveStatus');
+      if (!title || !body) {
+        status.textContent = 'Judul dan isi wajib diisi!';
+        status.className = 'text-sm mt-2 text-red-600';
+        status.classList.remove('hidden');
+        return;
+      }
+      try {
+        await DataService.saveContent({ title, category, body });
+        status.textContent = 'Konten berhasil disimpan!';
+        status.className = 'text-sm mt-2 text-green-600';
+        status.classList.remove('hidden');
+        document.getElementById('contentTitle').value = '';
+        document.getElementById('contentBody').value = '';
+        loadContents();
+        updateStats();
+      } catch (e) {
+        status.textContent = 'Gagal menyimpan: ' + e.message;
+        status.className = 'text-sm mt-2 text-red-600';
+        status.classList.remove('hidden');
+      }
+    }
+
+    async function loadContents() {
+      const contents = await DataService.getContents();
+      const el = document.getElementById('contentList');
+      el.innerHTML = contents.length ? contents.map(c => `
+        <div class="border rounded-lg p-3 flex justify-between items-start">
+          <div>
+            <span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">${c.category}</span>
+            <p class="font-medium mt-1">${c.title}</p>
+            <p class="text-xs text-gray-500">${c.created_at ? new Date(c.created_at).toLocaleString('id-ID') : (c.createdAt ? new Date(c.createdAt).toLocaleString('id-ID') : '')}</p>
+          </div>
+          <button onclick="deleteContent(${c.id})" class="text-red-500 text-sm hover:underline">Hapus</button>
+        </div>
+      `).join('') : '<p class="text-gray-400">Belum ada konten.</p>';
+    }
+
+    async function deleteContent(id) {
+      if (!confirm('Hapus konten ini?')) return;
+      await DataService.deleteContent(id);
+      loadContents();
+      updateStats();
+    }
+
+    async function loadPendaftaran() {
+      const regs = await DataService.getPendaftaran();
+      const tbody = document.getElementById('daftarTable');
+      const empty = document.getElementById('daftarEmpty');
+      if (!regs.length) {
+        tbody.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+      tbody.innerHTML = regs.map(r => `
+        <tr class="border-b hover:bg-gray-50">
+          <td class="px-3 py-2 font-medium">${r.nama || '-'}</td>
+          <td class="px-3 py-2">${r.jk || '-'}</td>
+          <td class="px-3 py-2">${r.asal_sekolah || '-'}</td>
+          <td class="px-3 py-2">${r.hp || '-'}</td>
+          <td class="px-3 py-2 text-xs">${(r.submitted_at || r.submittedAt) ? new Date(r.submitted_at || r.submittedAt).toLocaleString('id-ID') : '-'}</td>
+          <td class="px-3 py-2"><span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded">${r.status || 'Baru'}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function exportPendaftaran() {
+      DataService.getPendaftaran().then(regs => {
+        const blob = new Blob([JSON.stringify(regs, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'pendaftaran-sma-n1-tt.json';
+        a.click();
+        DataService.addLog('Export data pendaftaran');
+      });
+    }
+
+    async function savePengumuman() {
+      const title = document.getElementById('pengTitle').value.trim();
+      const body = document.getElementById('pengBody').value.trim();
+      if (!title || !body) return alert('Isi judul dan isi pengumuman');
+      await DataService.savePengumuman({ title, body });
+      document.getElementById('pengTitle').value = '';
+      document.getElementById('pengBody').value = '';
+      loadPengumuman();
+      updateStats();
+    }
+
+    async function loadPengumuman() {
+      const list = await DataService.getPengumuman();
+      document.getElementById('pengList').innerHTML = list.map(p => `
+        <div class="border-l-4 border-accent pl-3 py-2">
+          <p class="font-medium">${p.title}</p>
+          <p class="text-xs text-gray-500">${(p.created_at || p.createdAt) ? new Date(p.created_at || p.createdAt).toLocaleString('id-ID') : ''}</p>
+        </div>
+      `).join('') || '<p class="text-gray-400">Belum ada pengumuman.</p>';
+    }
+
+    async function loadLogs() {
+      const logs = await DataService.getLogs();
+      document.getElementById('activityLog').innerHTML = logs.length
+        ? logs.map(l => `<div class="flex justify-between border-b py-2"><span><strong>${l.user}</strong> — ${l.action}</span><span class="text-gray-400 text-xs">${l.time}</span></div>`).join('')
+        : '<p class="text-gray-400">Belum ada aktivitas.</p>';
+    }
+
+    async function updateStats() {
+      const [contents, daftar, peng, logs] = await Promise.all([
+        DataService.getContents(),
+        DataService.getPendaftaran(),
+        DataService.getPengumuman(),
+        DataService.getLogs()
+      ]);
+      document.getElementById('statKonten').textContent = contents.length;
+      document.getElementById('statDaftar').textContent = daftar.length;
+      document.getElementById('statPengumuman').textContent = peng.length;
+      document.getElementById('statLog').textContent = logs.length;
+    }
+
+    // Init
+    const sess = JSON.parse(sessionStorage.getItem('adminSession') || '{}');
+    document.getElementById('loginInfo').textContent = 'Login: ' + (sess.user || 'admin');
+    init();
+  </script>
+</body>
+</html>

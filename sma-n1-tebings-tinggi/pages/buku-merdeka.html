@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buku Teks Kurikulum Merdeka - Perpustakaan Digital</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#0d5c2e',secondary:'#1a7a3e',accent:'#f59e0b',dark:'#1e293b'},fontFamily:{sans:['Poppins','sans-serif']}}}}</script>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800">
+  <div id="site-header"></div>
+  <main class="container mx-auto px-4 py-10">
+    <nav class="text-sm text-gray-500 mb-6"><a href="../index.html" class="hover:text-primary">Beranda</a> / Perpustakaan Digital / Kurikulum Merdeka</nav>
+    <h1 class="text-3xl font-bold text-primary mb-2">Buku Teks Kurikulum Merdeka</h1>
+    <p class="text-gray-600 mb-8">Koleksi buku digital yang dapat dibaca secara online (PDF).</p>
+    <div id="bookGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div class="col-span-full text-center py-12 text-gray-400"><i class="fas fa-spinner fa-spin text-2xl"></i><p class="mt-2">Memuat koleksi...</p></div>
+    </div>
+    <p class="text-sm text-gray-500 mt-8 text-center">Untuk menambahkan koleksi buku PDF, login ke portal admin dan unggah file (setelah Supabase Storage aktif).</p>
+  </main>
+  <div id="site-footer"></div>
+  <script src="../js/layout.js"></script>
+  <script>
+    initLayout('perpustakaan');
+    async function loadBooks() {
+      try {
+        const res = await fetch('../data/books.json');
+        const books = await res.json();
+        const grid = document.getElementById('bookGrid');
+        grid.innerHTML = books.filter(b => b.kategori === 'Kurikulum Merdeka').map(b => {
+          const meta = 'Kelas ' + (b.kelas || '-') + ' | ' + (b.mapel || '');
+          const viewerUrl = b.file_url
+            ? 'viewer.html?title=' + encodeURIComponent(b.title) + '&src=' + encodeURIComponent(b.file_url) + '&meta=' + encodeURIComponent(meta)
+            : 'viewer.html?title=' + encodeURIComponent(b.title) + '&meta=' + encodeURIComponent(meta);
+          return `
+          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+            <div class="h-36 bg-gradient-to-br ${b.cover_color || 'from-green-500 to-green-700'} flex items-center justify-center text-white">
+              <i class="fas fa-book text-4xl opacity-80"></i>
+            </div>
+            <div class="p-4">
+              <h3 class="font-bold text-sm leading-tight">${b.title}</h3>
+              <p class="text-xs text-gray-500 mt-1">${meta}</p>
+              <a href="${viewerUrl}" class="mt-3 inline-flex items-center gap-1 w-full justify-center bg-primary text-white py-2 rounded-lg text-sm hover:bg-secondary transition">
+                <i class="fas fa-book-open"></i> Baca Online
+              </a>
+            </div>
+          </div>`;
+        }).join('');
+      } catch (e) {
+        document.getElementById('bookGrid').innerHTML = '<p class="col-span-full text-center text-red-500">Gagal memuat koleksi buku.</p>';
+      }
+    }
+    loadBooks();
+  </script>
+</body>
+</html>

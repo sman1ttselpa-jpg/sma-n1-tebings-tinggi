@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengumuman - SMA Negeri 1 Tebing Tinggi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#0d5c2e',secondary:'#1a7a3e',accent:'#f59e0b',dark:'#1e293b'},fontFamily:{sans:['Poppins','sans-serif']}}}}</script>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800">
+  <div id="site-header"></div>
+  <main class="container mx-auto px-4 py-10 max-w-4xl">
+    <nav class="text-sm text-gray-500 mb-6"><a href="../index.html" class="hover:text-primary">Beranda</a> / Informasi / Pengumuman</nav>
+    <h1 class="text-3xl font-bold text-primary mb-8">Pengumuman</h1>
+    <div class="space-y-4" id="pengumumanList">
+      <article class="bg-white rounded-xl shadow-md p-6 border-l-4 border-accent">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">Penting</span>
+            <h3 class="font-bold text-lg mt-2">Jadwal Ujian Tengah Semester Ganjil 2025/2026</h3>
+            <p class="text-sm text-gray-500 mt-1">20 Oktober 2025</p>
+          </div>
+        </div>
+        <p class="text-gray-600 mt-3">Ujian Tengah Semester akan dilaksanakan pada tanggal 3–14 November 2025. Siswa diharapkan mempersiapkan diri dengan baik. Jadwal detail per kelas akan diumumkan kemudian.</p>
+      </article>
+      <article class="bg-white rounded-xl shadow-md p-6 border-l-4 border-primary">
+        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">PPDB</span>
+        <h3 class="font-bold text-lg mt-2">Pembukaan PPDB Tahun Ajaran 2026/2027</h3>
+        <p class="text-sm text-gray-500 mt-1">15 Oktober 2025</p>
+        <p class="text-gray-600 mt-3">Penerimaan Peserta Didik Baru (PPDB) tahun ajaran 2026/2027 akan dibuka mulai bulan Januari 2026. Informasi lengkap dapat dilihat pada menu Pendaftaran.</p>
+      </article>
+      <article class="bg-white rounded-xl shadow-md p-6 border-l-4 border-secondary">
+        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Libur</span>
+        <h3 class="font-bold text-lg mt-2">Libur Semester Ganjil</h3>
+        <p class="text-sm text-gray-500 mt-1">10 Oktober 2025</p>
+        <p class="text-gray-600 mt-3">Libur semester ganjil dilaksanakan setelah pelaksanaan ujian. Tanggal pastinya akan disesuaikan dengan kalender pendidikan daerah.</p>
+      </article>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+  <script src="../js/layout.js"></script>
+  <script>initLayout('informasi');</script>
+</body>
+</html>

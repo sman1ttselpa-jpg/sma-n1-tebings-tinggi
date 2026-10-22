@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baca Buku - Perpustakaan Digital</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#0d5c2e',secondary:'#1a7a3e',accent:'#f59e0b',dark:'#1e293b'},fontFamily:{sans:['Poppins','sans-serif']}}}}</script>
+  <style>
+    #pdfFrame { width: 100%; height: calc(100vh - 120px); border: none; }
+    @media (max-width: 768px) { #pdfFrame { height: calc(100vh - 100px); } }
+  </style>
+</head>
+<body class="font-sans bg-gray-900 text-white">
+  <header class="bg-primary px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+    <div class="flex items-center gap-3">
+      <a href="buku-merdeka.html" class="hover:text-accent"><i class="fas fa-arrow-left"></i></a>
+      <div>
+        <h1 id="bookTitle" class="font-semibold text-sm md:text-base">Memuat buku...</h1>
+        <p id="bookMeta" class="text-xs text-green-200"></p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <a id="downloadBtn" href="#" target="_blank" class="hidden px-3 py-1.5 bg-white/20 rounded text-sm hover:bg-white/30">
+        <i class="fas fa-download mr-1"></i> Unduh
+      </a>
+      <a href="../index.html" class="px-3 py-1.5 bg-white/20 rounded text-sm hover:bg-white/30">
+        <i class="fas fa-home"></i>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div id="loading" class="flex flex-col items-center justify-center h-[70vh] text-gray-400">
+      <i class="fas fa-book-open text-5xl mb-4 animate-pulse"></i>
+      <p>Memuat dokumen PDF...</p>
+    </div>
+    <div id="error" class="hidden flex flex-col items-center justify-center h-[70vh] text-center px-4">
+      <i class="fas fa-exclamation-triangle text-5xl text-amber-400 mb-4"></i>
+      <p class="text-lg mb-2">PDF belum tersedia</p>
+      <p class="text-sm text-gray-400 max-w-md">File PDF belum diunggah. Admin dapat mengunggah buku melalui portal admin setelah Supabase Storage diaktifkan, atau tautkan URL PDF eksternal.</p>
+      <a href="buku-merdeka.html" class="mt-6 px-5 py-2 bg-primary rounded-lg hover:bg-secondary transition">Kembali ke Perpustakaan</a>
+    </div>
+    <iframe id="pdfFrame" class="hidden" title="PDF Viewer"></iframe>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const title = params.get('title') || 'Buku Digital';
+    const src = params.get('src') || '';
+    const meta = params.get('meta') || '';
+
+    document.getElementById('bookTitle').textContent = title;
+    document.getElementById('bookMeta').textContent = meta;
+
+    if (src && (src.endsWith('.pdf') || src.includes('pdf') || src.startsWith('http'))) {
+      const frame = document.getElementById('pdfFrame');
+      // Use Google Docs viewer as fallback for better compatibility, or direct
+      const viewerUrl = src.includes('drive.google') || src.includes('docs.google')
+        ? src
+        : src; // direct PDF
+      frame.src = viewerUrl;
+      frame.onload = () => {
+        document.getElementById('loading').classList.add('hidden');
+        frame.classList.remove('hidden');
+      };
+      frame.onerror = () => showError();
+      // Timeout fallback
+      setTimeout(() => {
+        if (!frame.classList.contains('hidden')) return;
+        // still try show
+        document.getElementById('loading').classList.add('hidden');
+        frame.classList.remove('hidden');
+      }, 3000);
+      const dl = document.getElementById('downloadBtn');
+      dl.href = src;
+      dl.classList.remove('hidden');
+    } else {
+      showError();
+    }
+
+    function showError() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('error').classList.remove('hidden');
+      document.getElementById('error').classList.add('flex');
+    }
+  </script>
+</body>
+</html>
